@@ -1,0 +1,3 @@
+package com.example.dto.AI;
+
+public enum JobStatus {PENDING, PREPARING_DATA, UPLOADING_FILE, RUNNING, PROCESSING, COMPLETED, FAILED}

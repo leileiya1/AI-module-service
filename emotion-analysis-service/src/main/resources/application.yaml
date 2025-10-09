@@ -1,0 +1,12 @@
+server:
+  port: 1239
+spring:
+  application:
+    name: emotion-analysis-service
+  ai:
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+      chat:
+        options:
+          model: glm-4
+          temperature: 0.1

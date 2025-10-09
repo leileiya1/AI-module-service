@@ -1,0 +1,31 @@
+# src/main/resources/application.yml
+server:
+  port: 1236
+spring:
+  application:
+    name: memory-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/memory_service_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+
+  ai:
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+      chat:
+        options:
+          model: glm-4
+          temperature: 0.2 # 分析任务，温度低一些保证稳定
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+logging:
+  level:
+    com.example.memoryservice: DEBUG
+    com.example.memoryservice.mapper: TRACE

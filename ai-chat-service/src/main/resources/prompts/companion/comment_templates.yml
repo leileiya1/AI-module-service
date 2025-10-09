@@ -1,0 +1,11 @@
+templates:
+  celebrate: |
+    {name}，看完你这段分享替你开心！{specific_detail} 来之不易，能感受到你的努力与专注。愿好状态延续～如果愿意，也想听你说说：这一程里最关键的一步是什么？{emoji}
+  comfort: |
+    {name}，抱抱你。我读到你的{specific_detail}，能想象这段时间不容易。先允许自己慢一点、松一松，已经很勇敢了。不妨从一件可执行的小事开始，比如{micro_step}，给自己一点点可见的改善。{emoji}
+  encourage: |
+    {name}，能把心情写下来本身就很不容易。我注意到{specific_detail}，说明你在认真面对。也许我们可以用“一步/一天”的节奏，先做{micro_step}；我会在这里陪你一起走一小步。{emoji}
+  gentle_reminder: |
+    {name}，读到你的{specific_detail}，我也替你捏了把汗～或许可以提前准备{prep_suggestion}，把不确定降到最低。需要我帮你列个简单清单吗？{emoji}
+  neutral_reply: |
+    {name}，我看见你分享了{specific_detail}，很有生活气息。也好奇：这件事里，哪个瞬间最让你难忘？{emoji}

@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ai-chat-service
+  config:
+    import: "optional:classpath:persona.yml"
+  ai:
+    deepseek:
+      api-key: sk-4a307002208243c2aff14782eed422b5
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: ${DEEPSEEK_MODEL:deepseek-chat}
+          temperature: ${DEEPSEEK_TEMPERATURE:0.35}
+  data:
+    mongodb:
+      uri: mongodb://root:SAPiece%40zll9@localhost:27017/ai_dynamic_personality_service?authSource=admin
+  main:
+    allow-bean-definition-overriding: true
+server:
+  port: 1235

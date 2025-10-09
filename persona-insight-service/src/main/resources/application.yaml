@@ -1,0 +1,30 @@
+server:
+  port: 1238
+spring:
+  application:
+    name: persona-insight-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/insight_service_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  task:
+    execution:
+      pool:
+        core-size: 2
+        max-size: 5
+      thread-name-prefix: style-analyzer-
+
+  ai:
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+      chat:
+        options:
+          model: glm-4
+          temperature: 0.3
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

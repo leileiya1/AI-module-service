@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.memoryservice.mapper.MemoryMapper">
+
+    <select id="searchSimilarMemoriesWithPinnedPriority" resultType="com.example.memoryservice.entity.Memory">
+        SELECT * FROM (
+                          (
+                              -- 第一部分：查询所有置顶的记忆
+                              SELECT
+                                  id, user_id, persona_id, content, create_time, pinned,
+                                  1 AS priority, -- 赋予置顶记录最高的优先级 1
+                                  1 - (embedding &lt;=&gt; CAST(#{targetVector, jdbcType=OTHER, typeHandler=com.example.memoryservice.handler.PGvectorTypeHandler} AS vector)) AS distance
+                              FROM
+                                  memories
+                              WHERE
+                                  user_id = #{userId}
+                                AND persona_id = #{personaId}
+                                AND pinned = TRUE
+                          )
+                          UNION ALL
+                          (
+                              -- 第二部分：查询所有未置顶的记忆
+                              SELECT
+                                  id, user_id, persona_id, content, create_time, pinned,
+                                  0 AS priority, -- 赋予未置顶记录较低的优先级 0
+                                  1 - (embedding &lt;=&gt; CAST(#{targetVector, jdbcType=OTHER, typeHandler=com.example.memoryservice.handler.PGvectorTypeHandler} AS vector)) AS distance
+                              FROM
+                                  memories
+                              WHERE
+                                  user_id = #{userId}
+                                AND persona_id = #{personaId}
+                                AND pinned = FALSE
+                          )
+                      ) AS combined_results
+        -- 【关键】最终排序：先按优先级，再按相似度
+        ORDER BY
+            priority DESC, distance DESC
+        LIMIT
+            #{topK}
+    </select>
+</mapper>

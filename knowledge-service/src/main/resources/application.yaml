@@ -1,0 +1,34 @@
+# src/main/resources/application.yml
+server:
+  port: 1237
+
+spring:
+  application:
+    name: knowledge-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/knowledge_service_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  task:
+    execution:
+      pool:
+        core-size: 4
+        max-size: 10
+      thread-name-prefix: doc-processor-
+
+  ai:
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
