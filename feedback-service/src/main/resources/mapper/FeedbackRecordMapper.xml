@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.feedbackservice.mapper.FeedbackRecordMapper">
+
+    <select id="findGoodFeedbackForFinetuning" resultType="com.example.entity.ai.FeedbackRecord">
+        SELECT *
+        FROM feedback_records
+        WHERE
+            user_id = #{userId}
+          AND persona_id = #{personaId}
+          AND feedback_type IN ('LIKED', 'EDITED')
+        ORDER BY create_time DESC
+        LIMIT 1000 -- 限制导出数量，防止数据量过大
+    </select>
+</mapper>

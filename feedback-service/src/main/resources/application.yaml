@@ -1,0 +1,15 @@
+server:
+  port: 1240
+
+spring:
+  application:
+    name: feedback-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/feedback_service_db
+    username: admin
+    password: admin
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

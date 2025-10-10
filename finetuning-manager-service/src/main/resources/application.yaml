@@ -1,0 +1,24 @@
+server:
+  port: 1241
+
+spring:
+  application:
+    name: finetuning-manager-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finetuning_service_db
+    username: admin
+    password: admin
+  task:
+    execution:
+      pool:
+        core-size: 2
+        max-size: 5
+      thread-name-prefix: finetune-worker-
+  ai:
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
