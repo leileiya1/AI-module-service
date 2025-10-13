@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.zhipuai.ZhiPuAiChatOptions;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,9 @@ import java.util.Optional;
  */
 @Service // 标记为Spring的服务组件
 @Slf4j
+
 public class CompanionServiceImpl implements CompanionService { // ✨ 实现接口
+    // ✨【核心简化】: 现在我们只需要注入一个默认的、由Spring自动配置的ChatClient即可！
 
     private final ChatClient chat;
     private final PersonaManagementService personaService;
@@ -202,21 +205,42 @@ public class CompanionServiceImpl implements CompanionService { // ✨ 实现接
         }
 
         // 8. 构建最终的 Prompt
-        String systemPrompt = buildSystemPromptWithEmotionAndInsight(persona, req, scenario,emotion);
+        String systemPrompt = buildSystemPromptWithEmotionAndInsight(persona, req, scenario, emotion);
         String userPrompt = buildUserPromptWithContext(req, contextBuilder.toString());
         log.debug("【评论生成-步骤4】构建完成的 System Prompt:\n---\n{}\n---", systemPrompt);
         log.debug("【评论生成-步骤4】构建完成的 User Prompt (含上下文):\n---\n{}\n---", userPrompt);
 
-        // 9. 调用大语言模型
+        // 9. 【核心简化】动态构建调用选项并执行
+        log.info("【模型选择】准备构建AI调用选项...");
+
+        // a. 创建一个 ZhipuAiChatOptions 的构建器
+        ZhiPuAiChatOptions.Builder optionsBuilder = ZhiPuAiChatOptions.builder();
+
+        // b. 检查是否需要使用专属微调模型
+        if (StringUtils.hasText(persona.getFineTunedModelId())) {
+            // 如果人格有关联的专属微调模型ID，则在本次调用中指定使用该模型
+            String modelId = persona.getFineTunedModelId();
+            optionsBuilder.model(modelId);
+            log.info("【模型选择】人格 '{}' 拥有专属微调模型 '{}'，本次调用将使用该模型。", persona.getName(), modelId);
+        } else {
+            // 否则，不指定模型，让其使用 application.yml 中配置的默认模型 (如 glm-4v)
+            log.info("【模型选择】人格 '{}' 未指定专属模型，本次调用将使用默认模型。", persona.getName());
+        }
+
+        // c. 构建最终的调用选项
+        ZhiPuAiChatOptions chatOptions = optionsBuilder.build();
+
+        // 10. 调用大语言模型
         log.info("【评论生成-步骤5】正在调用 AI 模型生成最终评论...");
         String comment = chat.prompt()
+                .options(chatOptions)
                 .system(systemPrompt)
                 .user(userPrompt)
                 .call()
                 .content();
         log.info("【评论生成-步骤5】AI 模型成功返回评论: '{}'", comment);
 
-        // 10. 【整合】异步将本次互动存入记忆
+        // 11. 【整合】异步将本次互动存入记忆
         if (persona.isMemoryEnabled() && StringUtils.hasText(comment)) {
             addInteractionToMemoryAsync(userId, persona.getId(), originalQuery, comment);
         }
@@ -305,11 +329,11 @@ public class CompanionServiceImpl implements CompanionService { // ✨ 实现接
     private String buildSystemPromptWithEmotionAndInsight(Persona persona, CommentReq req, String scenario, String emotion) {
         // 1. 定义通用规则和约束
         String guidelines = """
-            - 你的回答必须自然、真诚，严格符合你的角色设定。
-            - 评论要针对帖子内容，不要空洞。
-            - 长度严格遵守下面的字数限制。
-            - 直接输出评论文本，不要包含任何额外的解释或标记。
-            """;
+                - 你的回答必须自然、真诚，严格符合你的角色设定。
+                - 评论要针对帖子内容，不要空洞。
+                - 长度严格遵守下面的字数限制。
+                - 直接输出评论文本，不要包含任何额外的解释或标记。
+                """;
         int maxLen = req.maxLength() != null ? req.maxLength() : 160;
 
         // 2. 【核心】调用辅助方法，根据场景和情绪，智能地查找最匹配的话术模板
@@ -329,7 +353,7 @@ public class CompanionServiceImpl implements CompanionService { // ✨ 实现接
                 你可以对模板进行润色和扩展，但必须保留其核心含义和风格。
                 
                 【专属场景模板】: %s
-
+                
                 [评论规则]
                 %s
                 评论长度严格限制在 %d 字以内。

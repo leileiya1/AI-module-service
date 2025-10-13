@@ -79,6 +79,13 @@ public class Persona {
     private Long knowledgeBaseId;
 
     /**
+     * 【核心字段】存储由 finetuning-manager-service 训练生成的、专属的微调模型ID。
+     * 如果此字段不为空，系统将优先使用这个模型进行对话生成。
+     * 默认为 null，表示使用通用的基础模型。
+     */
+    private String fineTunedModelId;
+
+    /**
      * 记录创建时间。
      */
     @CreatedDate

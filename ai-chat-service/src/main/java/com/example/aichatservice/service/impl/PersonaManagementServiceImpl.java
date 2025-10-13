@@ -5,42 +5,37 @@ import com.example.aichatservice.exception.PersonaNotFoundException;
 import com.example.aichatservice.exception.UnauthorizedActionException;
 import com.example.aichatservice.repository.PersonaRepository;
 import com.example.aichatservice.service.PersonaManagementService;
+import com.example.apis.FinetuningManagerClient;
 import com.example.apis.InsightServiceClient;
 import com.example.dto.AI.*;
+import com.example.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PersonaManagementServiceImpl implements PersonaManagementService {
 
     private final PersonaRepository personaRepository;
     private final InsightServiceClient insightServiceClient; // ✨ 注入新的 Feign 客户端
     private final ObjectMapper objectMapper; // ✨ 注入 ObjectMapper 用于解析JSON
+    private final FinetuningManagerClient finetuningManagerClient; // ✨ 注入Feign客户端
 
-    public PersonaManagementServiceImpl(PersonaRepository personaRepository, InsightServiceClient insightServiceClient, ObjectMapper objectMapper) {
-        this.personaRepository = personaRepository;
-        this.insightServiceClient = insightServiceClient;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     public Persona createPersona(PersonaDto dto, String userId) {
         log.info("用户 '{}' 正在创建新的人设: {}", userId, dto.getName());
         Persona persona = new Persona();
         persona.setUserId(userId);
-        persona.setName(dto.getName());
-        persona.setRole(dto.getRole());
-        persona.setTone(dto.getTone());
-        persona.setStyle(dto.getStyle());
-        persona.setCommentTemplates(dto.getCommentTemplates());
-        persona.setMemoryEnabled(dto.isMemoryEnabled());
-        persona.setKnowledgeBaseId(dto.getKnowledgeBaseId());
-        return personaRepository.save(persona);
+        return getPersona(dto, persona);
     }
 
     @Override
@@ -48,6 +43,11 @@ public class PersonaManagementServiceImpl implements PersonaManagementService {
         log.info("用户 '{}' 正在尝试更新人设 ID: {}", userId, personaId);
         Persona existingPersona = findAndVerifyOwnership(personaId, userId);
 
+        return getPersona(dto, existingPersona);
+    }
+
+    @NotNull
+    private Persona getPersona(PersonaDto dto, Persona existingPersona) {
         existingPersona.setName(dto.getName());
         existingPersona.setRole(dto.getRole());
         existingPersona.setTone(dto.getTone());
@@ -125,6 +125,49 @@ public class PersonaManagementServiceImpl implements PersonaManagementService {
         // 如果循环结束任务仍未完成，则超时
         log.error("【人格克隆】[用户:{}] [JobID:{}] 任务处理超时！", userId, jobId);
         throw new RuntimeException("人格风格分析超时，请稍后再试。");
+    }
+
+    @Override
+    public void startFinetuningForPersona(String personaId, String userId) {
+        log.info("【微调触发】用户 '{}' 正在为人格 '{}' 启动微调训练...", userId, personaId);
+
+        // 1. 权限校验：确保用户只能为自己的人格启动训练
+        Persona persona = findAndVerifyOwnership(personaId, userId);
+
+        // 2. 构建请求并调用 finetuning-manager-service
+        CreateFinetuningJobRequest request = new CreateFinetuningJobRequest(userId, personaId);
+        try {
+            CreateFinetuningJobResponse response = finetuningManagerClient.createJob(request);
+            log.info("【微调触发】已成功向 finetuning-manager-service 提交任务, JobID: {}", response.getJobId());
+        } catch (Exception e) {
+            log.error("【微调触发】向 finetuning-manager-service 提交任务失败！", e);
+            throw new RuntimeException("启动微调任务失败，请稍后重试。");
+        }
+    }
+
+    /**
+     * 【新增实现】更新人格模型ID的核心逻辑。
+     */
+    @Override
+    @Transactional
+    public void updatePersonaModelId(String personaId, String newModelId) {
+        log.info("【内部更新】收到更新人格 '{}' 的模型ID请求，新模型ID为: '{}'", personaId, newModelId);
+
+        // 1. 查找人格
+        // findById返回一个Optional，这是处理可能不存在对象的最安全方式。
+        Persona persona = personaRepository.findById(personaId)
+                .orElseThrow(() -> {
+                    log.error("【内部更新】更新失败：未能在数据库中找到ID为 '{}' 的人格。", personaId);
+                    return new ResourceNotFoundException("更新模型ID失败：人格不存在。");
+                });
+
+        // 2. 更新模型ID字段
+        persona.setFineTunedModelId(newModelId);
+
+        // 3. 保存更新后的人格回数据库
+        personaRepository.save(persona);
+
+        log.info("【内部更新】人格 '{}' 的 fineTunedModelId 已成功更新为 '{}'", personaId, newModelId);
     }
 
     /**

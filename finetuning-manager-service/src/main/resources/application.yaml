@@ -14,11 +14,15 @@ spring:
         core-size: 2
         max-size: 5
       thread-name-prefix: finetune-worker-
+zhipu:
   ai:
-    zhipuai:
-      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
-
+    api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+# 日志配置
+logging:
+  level:
+    com.example.finetuningservice: DEBUG
+    com.example.finetuningservice.mapper: TRACE

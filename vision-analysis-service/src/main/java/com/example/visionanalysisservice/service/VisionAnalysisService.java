@@ -84,7 +84,7 @@ public class VisionAnalysisService {
                 response.getData().getChoices() != null && !response.getData().getChoices().isEmpty()) {
 
                 // 安全地获取回复内容
-                Object reply = response.getData().getChoices().get(0).getMessage().getContent();
+                Object reply = response.getData().getChoices().getFirst().getMessage().getContent();
                 String description = (reply != null) ? reply.toString() : "未能从AI获取有效描述。";
 
                 log.info("【视觉分析服务】成功获取图片描述: {}", description);

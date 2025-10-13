@@ -10,3 +10,11 @@ zhipu:
     key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O # ?? ????????? API Key
   model:
     vision: glm-4.1v-thinking-flashx # ??????????
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,trace,metrics
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans

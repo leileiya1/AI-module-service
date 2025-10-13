@@ -10,3 +10,11 @@ spring:
         options:
           model: glm-4
           temperature: 0.1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,trace,metrics
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans

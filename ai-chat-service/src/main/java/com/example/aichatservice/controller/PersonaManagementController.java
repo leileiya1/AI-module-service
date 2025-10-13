@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/personas")
@@ -20,6 +21,18 @@ public class PersonaManagementController {
 
     private final PersonaManagementService personaService;
 
+    /**
+     * 【新增API】触发对指定人格的微调训练任务。
+     * 这是一个异步触发接口，会立即返回。
+     */
+    @PostMapping("/{personaId}/start-finetuning")
+    public ResponseEntity<Map<String, String>> startFinetuning(
+            @PathVariable String personaId,
+            @RequestHeader("X-User-Id") String userId) {
+        log.info("【API入口】收到用户 '{}' 启动人格 '{}' 微调的请求", userId, personaId);
+        personaService.startFinetuningForPersona(personaId, userId);
+        return ResponseEntity.accepted().body(Map.of("message", "微调任务已成功提交，正在后台处理中，请稍后查看人格详情。"));
+    }
 
     /**
      * 创建一个新的AI人设。

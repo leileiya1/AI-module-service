@@ -38,7 +38,6 @@
         <dependency>
             <groupId>ai.z.openapi</groupId>
             <artifactId>zai-sdk</artifactId>
-            <version>0.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.example</groupId>

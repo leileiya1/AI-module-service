@@ -4,13 +4,11 @@ spring:
   config:
     import: "optional:classpath:persona.yml"
   ai:
-    deepseek:
-      api-key: sk-4a307002208243c2aff14782eed422b5
-      base-url: https://api.deepseek.com
+    zhipuai:
+      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
       chat:
         options:
-          model: ${DEEPSEEK_MODEL:deepseek-chat}
-          temperature: ${DEEPSEEK_TEMPERATURE:0.35}
+          model: glm-4
   data:
     mongodb:
       uri: mongodb://root:SAPiece%40zll9@localhost:27017/ai_dynamic_personality_service?authSource=admin
@@ -18,3 +16,12 @@ spring:
     allow-bean-definition-overriding: true
 server:
   port: 1235
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,trace,metrics
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+

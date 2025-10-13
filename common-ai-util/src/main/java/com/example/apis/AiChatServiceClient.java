@@ -11,5 +11,5 @@ import java.util.Map;
 public interface AiChatServiceClient {
     // ai-chat-service 需要提供这个内部回调接口
     @PutMapping("/internal/personas/{personaId}/model")
-    void updatePersonaModel(@PathVariable String personaId, @RequestBody Map<String, String> payload);
+    void updatePersonaModel(@PathVariable("personaId") String personaId, @RequestBody Map<String, String> payload);
 }

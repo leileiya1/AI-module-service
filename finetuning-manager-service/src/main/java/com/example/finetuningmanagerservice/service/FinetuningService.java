@@ -32,10 +32,7 @@ public class FinetuningService {
         job.setBaseModel(request.getBaseModel());
         job.setStatus(JobStatus.PENDING);
         jobMapper.insert(job);
-
-        // 触发异步处理
         processor.process(jobId);
-
         return new CreateJobResponse(jobId, "微调任务已成功提交，正在后台处理。");
     }
 }
