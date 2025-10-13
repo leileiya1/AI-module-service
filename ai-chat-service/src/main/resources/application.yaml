@@ -12,8 +12,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://root:SAPiece%40zll9@localhost:27017/ai_dynamic_personality_service?authSource=admin
-  main:
-    allow-bean-definition-overriding: true
 server:
   port: 1235
 management:
