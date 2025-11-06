@@ -18,6 +18,14 @@
 # 保留任何子目录中的 pom.xml
 !*/pom.xml
 
+# 保留 README.md 文件
+!/README.md
+!*/README.md
+
+# 保留 sql 目录及其所有内容
+!/sql/
+!/sql/**
+
 # 保留当前目录下的 src/ 及其所有内容（若仓库根直接就是模块）
 !src/
 !src/**

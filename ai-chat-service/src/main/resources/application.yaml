@@ -5,7 +5,7 @@ spring:
     import: "optional:classpath:persona.yml"
   ai:
     zhipuai:
-      api-key: 18dc85f52e194ee78697a8ad87b22871.nPsJDtsyetDaaj5O
+      api-key: #你的apikey
       chat:
         options:
           model: glm-4
