@@ -1,20 +1,63 @@
 # AI-Module 智能人格化聊天系统
 
-## 项目简介
+<div align="center">
 
-AI-Module 是一个基于微服务架构的智能人格化聊天系统，集成了先进的AI能力，包括对话管理、记忆存储、知识库、人格分析、情绪分析、视觉识别等功能。系统采用Spring Cloud生态，提供高可用、可扩展的企业级AI服务。
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.0-blue.svg)](https://spring.io/projects/spring-cloud)
+[![Spring AI](https://img.shields.io/badge/Spring%20AI-1.0.2-green.svg)](https://spring.io/projects/spring-ai)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791.svg)](https://www.postgresql.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-green.svg)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-### 核心特性
+**🚀 基于Spring Cloud的企业级AI对话平台 | 集成智谱AI GLM-4 | 支持向量记忆、知识库RAG、情绪分析、个性化微调**
 
-- **AI对话管理** - 基于智谱AI的智能对话，支持多人格切换
-- **记忆系统** - 使用向量数据库存储和检索对话记忆
-- **知识库** - 文档解析、向量化存储和智能检索
-- **人格洞察** - 用户行为分析和人格特征提取
-- **情绪分析** - 实时情绪识别和分析
-- **视觉分析** - 图像理解和视觉内容分析
-- **用户反馈** - 收集和管理用户反馈数据
-- **模型微调** - 支持基于用户数据的模型个性化微调
-- **分布式追踪** - Zipkin链路追踪，便于监控和调试
+[快速开始](#快速开始) • [在线文档](#api文档) • [架构设计](#系统架构) • [贡献指南](#贡献指南)
+
+</div>
+
+---
+
+## 📖 项目简介
+
+AI-Module 是一个基于微服务架构的**智能人格化聊天系统**，集成了先进的AI能力，包括对话管理、记忆存储、知识库、人格分析、情绪分析、视觉识别等功能。系统采用Spring Cloud生态，提供高可用、可扩展的企业级AI服务。
+
+## ✨ 核心特性
+
+<table>
+  <tr>
+    <td>🧠 <b>向量记忆系统</b></td>
+    <td>基于pgvector的长期记忆存储与相似度检索，支持记忆置顶功能</td>
+  </tr>
+  <tr>
+    <td>📚 <b>RAG知识库</b></td>
+    <td>文档解析、智能分块、向量化存储与语义搜索，支持10MB文档</td>
+  </tr>
+  <tr>
+    <td>🤖 <b>AI对话管理</b></td>
+    <td>集成智谱AI GLM-4模型，支持多人格切换和上下文管理</td>
+  </tr>
+  <tr>
+    <td>😊 <b>情绪分析</b></td>
+    <td>实时识别对话情绪、趋势分析和情绪可视化</td>
+  </tr>
+  <tr>
+    <td>👤 <b>人格洞察</b></td>
+    <td>用户行为分析、人格特征提取、写作风格识别</td>
+  </tr>
+  <tr>
+    <td>🎨 <b>模型微调</b></td>
+    <td>基于用户反馈数据的个性化模型训练与管理</td>
+  </tr>
+  <tr>
+    <td>👁️ <b>视觉分析</b></td>
+    <td>图像内容理解、视觉场景分析、图文结合对话</td>
+  </tr>
+  <tr>
+    <td>🔍 <b>分布式追踪</b></td>
+    <td>Zipkin链路追踪，便于监控、调试和性能优化</td>
+  </tr>
+</table>
 
 ## 系统架构
 
